@@ -154,7 +154,8 @@ docker:
 ####################
 K3S_CLUSTER ?= "httproute-sync-operator"
 
-e2e: e2e-build e2e-exec e2e-destroy
+
+e2e: envtest e2e-build e2e-exec e2e-destroy
 
 e2e-build: kind
 	$(KIND) create cluster --wait=60s --name $(K3S_CLUSTER) --config ./e2e/kind.yaml --image=kindest/node:$${KIND_K8S_VERSION:-v1.30.0}
@@ -266,6 +267,14 @@ $(LOCALBIN):
 # -- Helm Plugins
 ####################
 
+ENVTEST_VERSION ?= release-0.19
+ENVTEST ?= $(LOCALBIN)/setup-envtest
+
+.PHONY: envtest
+envtest: $(ENVTEST) ## Download setup-envtest locally if necessary.
+$(ENVTEST): $(LOCALBIN)
+	$(call go-install-tool,$(ENVTEST),sigs.k8s.io/controller-runtime/tools/setup-envtest@$(ENVTEST_VERSION))
+
 HELM_SCHEMA_VERSION   := ""
 helm-plugin-schema: helm
 	@$(HELM) plugin install https://github.com/losisin/helm-values-schema-json.git --version $(HELM_SCHEMA_VERSION) || true
@@ -304,6 +313,8 @@ KIND_LOOKUP  := kubernetes-sigs/kind
 kind:
 	@test -s $(KIND) && $(KIND) --version | grep -q $(KIND_VERSION) || \
 	$(call go-install-tool,$(KIND),sigs.k8s.io/kind/cmd/kind@$(KIND_VERSION))
+
+
 
 HELM         := $(LOCALBIN)/helm
 HELM_VERSION := v3.17.2
