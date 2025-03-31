@@ -159,6 +159,7 @@ e2e: envtest e2e-build e2e-exec e2e-destroy
 
 e2e-build: kind
 	$(KIND) create cluster --wait=60s --name $(K3S_CLUSTER) --config ./e2e/kind.yaml --image=kindest/node:$${KIND_K8S_VERSION:-v1.30.0}
+	$(ENVTEST) use
 	$(MAKE) e2e-install
 
 e2e-exec: ginkgo
