@@ -48,7 +48,7 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-	utilruntime.Must(gateway.AddToScheme(scheme))
+	utilruntime.Must(gateway.Install(schema))
 
 	// +kubebuilder:scaffold:scheme
 }
