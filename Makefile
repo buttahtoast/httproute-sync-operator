@@ -55,16 +55,12 @@ run: generate manifests
 	go run .
 
 # Generate manifests e.g. CRD, RBAC etc.
-manifests: controller-gen apidocs
+manifests: controller-gen
 	@$(CONTROLLER_GEN) crd paths="./..." output:crd:artifacts:config=charts/httproute-sync-operator/crds
 
 # Generate code
 generate: controller-gen
 	@$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
-
-apidocs: TARGET_DIR      := $(shell mktemp -d)
-apidocs: apidocs-gen generate
-	@$(APIDOCS_GEN) crdoc --resources charts/httproute-sync-operator/crds --output docs/reference.md --template ./hack/templates/crds.tmpl
 
 ####################
 # -- Docker
