@@ -33,7 +33,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --zap-log-level={{ default 4 .Values.args.logLevel }}
-            - --enable-pprof={{ .Values.args.pprof }}
           {{- with .Values.args.extraArgs }}
             {{- toYaml . | nindent 12 }}
           {{- end }}

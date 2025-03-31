@@ -53,7 +53,7 @@ global:
 # -- controller arguments
 args:
   # -- LogLevel of Controller
-  logLevel: 7
+  logLevel: info
 
 rbac:
   # -- Enable bootstraping of RBAC resources
