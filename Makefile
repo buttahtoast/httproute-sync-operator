@@ -1,9 +1,8 @@
 # Version
-GIT_HEAD_COMMIT ?= $(shell git rev-parse --short HEAD)
-VERSION         ?= $(or $(shell git describe --abbrev=0 --tags --match "v*" 2>/dev/null),$(GIT_HEAD_COMMIT))
-GOOS            ?= $(shell go env GOOS)
-GOARCH          ?= $(shell go env GOARCH)
-
+GIT_HEAD_COMMIT     ?= $(shell git rev-parse --short HEAD)
+VERSION             ?= $(or $(shell git describe --abbrev=0 --tags --match "v*" 2>/dev/null),$(GIT_HEAD_COMMIT))
+GOOS                ?= $(shell go env GOOS)
+GOARCH              ?= $(shell go env GOARCH)
 # Defaults
 REGISTRY        ?= ghcr.io
 REPOSITORY      ?= buttahtoast/httproute-sync-operator
@@ -39,8 +38,17 @@ all: manager
 
 # Run tests
 .PHONY: test
-test: test-clean generate manifests test-clean
+test: controller-gen setup-envtest test-clean generate manifests test-clean
 	@GO111MODULE=on go test -v $(shell go list ./... | grep -v "e2e") -coverprofile coverage.out
+ENVTEST_K8S_VERSION ?= $(shell go list -m -f "{{ .Version }}" k8s.io/api | awk -F'[v.]' '{printf "1.%d", $$3}')
+.PHONY: setup-envtest
+setup-envtest: envtest ## Download the binaries required for ENVTEST in the local bin directory.
+	echo "Setting up envtest binaries for Kubernetes version $(ENVTEST_K8S_VERSION)..."
+    @$(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path || { \
+        echo "Error: Failed to set up envtest binaries for version $(ENVTEST_K8S_VERSION)."; \
+        exit 1; \
+    }
+
 
 .PHONY: test-clean
 test-clean: ## Clean tests cache
@@ -155,11 +163,10 @@ docker:
 K3S_CLUSTER ?= "httproute-sync-operator"
 
 
-e2e: envtest e2e-build e2e-exec e2e-destroy
+e2e: e2e-build e2e-exec e2e-destroy
 
 e2e-build: kind
 	$(KIND) create cluster --wait=60s --name $(K3S_CLUSTER) --config ./e2e/kind.yaml --image=kindest/node:$${KIND_K8S_VERSION:-v1.30.0}
-	$(ENVTEST) use
 	$(MAKE) e2e-install
 
 e2e-exec: ginkgo
@@ -268,7 +275,7 @@ $(LOCALBIN):
 # -- Helm Plugins
 ####################
 
-ENVTEST_VERSION ?= release-0.19
+ENVTEST_VERSION ?= $(shell go list -m -f "{{ .Version }}" sigs.k8s.io/controller-runtime | awk -F'[v.]' '{printf "release-%d.%d", $$2, $$3}')
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 
 .PHONY: envtest

@@ -95,7 +95,7 @@ var _ = Describe("Manager", Ordered, func() {
 			if err == nil {
 				_, _ = fmt.Fprint(GinkgoWriter, "Controller logs:\n ", controllerLogs)
 			} else {
-				_, _ = fmt.Fprint(GinkgoWriter, fmt.Sprintf("Failed to get Controller logs: %s", err))
+				_, _ = fmt.Fprintf(GinkgoWriter, "Failed to get Controller logs: %s", err)
 			}
 
 			By("Fetching Kubernetes events")
