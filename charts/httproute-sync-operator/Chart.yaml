@@ -1,6 +1,6 @@
 apiVersion: v2
 name: httproute-sync-operator
-description:  The httproute-sync-operator is a Kubernetes operator that synchronizes hostnames from HTTPRoute resources to their referenced Gateway resources, ensuring proper routing configuration while handling namespace permissions and cleanup on deletion. 
+description: The httproute-sync-operator is a Kubernetes operator that synchronizes hostnames from HTTPRoute resources to their referenced Gateway resources, ensuring proper routing configuration while handling namespace permissions and cleanup on deletion. 
 type: application
 # Note: The version is overwritten by the release workflow.
 version: 0.0.0
@@ -10,5 +10,3 @@ keywords:
 - kubernetes
 - gatewayapi
 - httproute
-sources:
-

@@ -84,4 +84,3 @@ signs:
   - "${artifact}"
   - "--yes"
   artifacts: all
-  

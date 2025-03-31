@@ -4,4 +4,3 @@ defaultPlatforms:
 builds:
 - id: httproute-sync-operator
   main: cmd/
-  

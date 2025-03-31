@@ -204,4 +204,3 @@ monitoring:
       metricRelabelings: []
       # -- Set relabelings for the endpoint of the serviceMonitor
       relabelings: []
-      
