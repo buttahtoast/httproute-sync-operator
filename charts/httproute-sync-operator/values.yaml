@@ -109,13 +109,13 @@ securityContext:
 livenessProbe:
   httpGet:
     path: /healthz
-    port: 10080
+    port: 8081
 
 # -- Configure the readiness probe using Deployment probe spec
 readinessProbe:
   httpGet:
     path: /readyz
-    port: 10080
+    port: 8081
 
 # -- Set the resource requests/limits
 resources:
