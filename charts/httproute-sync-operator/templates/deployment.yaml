@@ -18,13 +18,6 @@ spec:
       labels:
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if .Values.webhooks.enabled }}
-      volumes:
-      - name: webhook
-        secret:
-          secretName: {{ include "helm.fullname" . }}-webhook-cert
-          defaultMode: 420
-      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -40,8 +33,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --zap-log-level={{ default 4 .Values.args.logLevel }}
-            - --setting-name={{ include "config.name" $}}
-            - --enable-webhooks={{ .Values.webhooks.enabled }}
             - --enable-pprof={{ .Values.args.pprof }}
           {{- with .Values.args.extraArgs }}
             {{- toYaml . | nindent 12 }}
@@ -62,11 +53,6 @@ spec:
             containerPort: 8080
             protocol: TCP
           {{- end }}
-          {{- if .Values.webhooks.enabled }}
-          - name: webhook
-            containerPort: 9443
-            protocol: TCP
-          {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12}}
           readinessProbe:
@@ -74,11 +60,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-          {{- if .Values.webhooks.enabled }}
-          - mountPath: /tmp/k8s-webhook-server/serving-certs
-            name: webhook
-            readOnly: true
-          {{- end }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

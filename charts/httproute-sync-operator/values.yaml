@@ -50,16 +50,10 @@ global:
       # -- Set a pod priorityClassName
       priorityClassName: ""
 
-# Manage CRD Lifecycle
-crds:
-  # -- Install the CustomResourceDefinitions (This also manages the lifecycle of the CRDs for update operations)
-  install: true
-  # -- Extra Labels for CRDs
-  labels: {}
-  # -- Extra Annotations for CRDs
-  annnotations: {}
-  # -- Keep the annotations if deleted
-  keep: false
+# -- controller arguments
+args:
+  # -- LogLevel of Controller
+  logLevel: 7
 
 rbac:
   # -- Enable bootstraping of RBAC resources
